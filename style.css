@@ -1,0 +1,329 @@
+body {
+    font-family: American Typewriter, serif ; 
+    background-image: url('mario-pixel-art.gif'); 
+    background-size: cover; 
+    background-repeat: no-repeat; 
+    background-position: center center; 
+    background-attachment: fixed; 
+    color: #ecf0f1; 
+    margin: 0;
+    overflow-x: hidden;
+}
+
+/* main container */
+.container {
+    background-color: transparent !important; 
+    max-width: 960px; 
+}
+
+/* page style */ 
+.page {
+    width: 100%;
+    
+    background-color: rgba(0, 0, 0, 0.6); 
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5); 
+}
+
+
+/* home page style */
+.glow-text {
+    font-size: 80px;
+    font-weight: bold;
+    text-align: center;
+    padding: 0;
+    font-family: Optima,sans-serif;
+    color: #b883a0; 
+
+    /* Typing effect styles */
+    overflow: hidden;
+    white-space: nowrap;
+    margin: 0 auto;
+    width: 0;
+    max-width: fit-content;
+    border-right: 0.15em solid rgba(255, 255, 255, 0.7);
+
+    animation:
+        typing 8.2s steps(13) infinite forwards,
+        blink-caret 0.65s step-end infinite,
+        glow 1s ease-in-out infinite alternate;
+    
+    -webkit-animation:
+        typing 8.2s steps(13) infinite forwards,
+        blink-caret 0.65s step-end infinite,
+        glow 1s ease-in-out infinite alternate;
+}
+
+/* quiz page style */
+#resultPage h2, #resultPage h3, #resultPage h4 {
+    font-size: 2rem;
+}
+ 
+#quiz input[type="radio"] {
+    transform: scale(1.4); 
+}
+
+#quiz {
+    padding: 30px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.2);
+    max-width: 900px;
+    margin: 0 auto;
+    font-family: 'Arial', sans-serif;
+    min-height: 500px; 
+}
+
+#quiz label {
+    margin-left: 0;
+    padding-left: 0;
+    display: block;
+}
+
+#quiz input[type="radio"] {
+    transform: scale(1.4);
+    margin-left: 0;
+}
+
+.question.active {
+    font-size: 1.5rem;
+    padding: 20px;
+}
+
+/*button style*/
+button {
+    font-size: 1.5rem; /* Make the buttons bigger */
+    padding: 15px 25px;
+}
+/* are you ready animation */
+@keyframes typing {
+    0% { width: 0; }
+    26.83% { width: 100%; }
+    87.80% { width: 100%; }
+    100% { width: 0; } 
+}
+/* perfixes for wider browser support */
+@-webkit-keyframes typing {
+    0% { width: 0; }
+    26.83% { width: 100%; }
+    87.80% { width: 100%; }
+    100% { width: 0; }
+}
+
+/* keyframes for blinking cursor */
+@keyframes blink-caret {
+    from, to { border-color: transparent }
+    50% { border-color: rgba(255, 255, 255, 0.7); }
+}
+
+/* prefixes for keyframes blink-caret */
+@-webkit-keyframes blink-caret {
+    from, to { border-color: transparent }
+    50% { border-color: rgba(255, 255, 255, 0.7); }
+}
+
+
+/* keyframes for glow */
+
+@keyframes glow {
+    from {
+        text-shadow:
+            0 0 10px rgba(12, 38, 234, 0.8),    
+            0 0 20px rgba(4, 23, 106, 0.6),
+            0 0 30px rgba(118, 84, 173, 0.7),   
+            0 0 40px rgba(255, 0, 255, 0.5),
+            0 0 50px rgba(255, 255, 0, 0.4),    
+            0 0 60px rgba(255, 0, 255, 0.3),    
+            0 0 70px rgba(255, 255, 0, 0.2);    
+    }
+    to {
+        text-shadow:
+            0 0 15px rgb(30, 86, 199),    
+            0 0 25px rgba(10, 10, 156, 0.8),
+            0 0 35px rgba(255, 50, 255, 0.8),   
+            0 0 45px rgba(255, 50, 255, 0.6),
+            0 0 55px rgba(70, 8, 136, 0.5),
+            0 0 65px rgba(255, 50, 255, 0.4),
+            0 0 75px rgba(15, 8, 194, 0.3), 
+            0 0 85px rgba(255, 50, 255, 0.2);  
+    }
+}
+
+
+/* prefixes for browser support */
+
+@-webkit-keyframes glow {
+    from {
+        text-shadow:
+            0 0 10px rgba(45, 32, 223, 0.8),
+            0 0 20px rgba(67, 44, 241, 0.6),
+           
+            0 0 40px rgba(255, 0, 255, 0.5),
+            0 0 50px rgba(37, 7, 187, 0.4),
+            0 0 60px rgba(255, 0, 255, 0.3),
+            0 0 70px rgba(8, 43, 150, 0.2);
+    }
+    to {
+        text-shadow:
+            0 0 15px rgb(77, 94, 199),
+            0 0 25px rgba(72, 55, 226, 0.8),
+            0 0 35px rgba(255, 50, 255, 0.8),
+            0 0 45px rgba(39, 37, 163, 0.6),
+            0 0 55px rgba(53, 136, 214, 0.5),
+            0 0 65px rgba(255, 50, 255, 0.4),
+            0 0 75px rgba(11, 26, 91, 0.3),
+           
+    }
+} 
+@keyframes glow-mobile {
+    from {
+        text-shadow:
+            0 0 5px rgba(32, 23, 213, 0.8),    
+            0 0 10px rgba(12, 7, 156, 0.6),   
+            0 0 15px rgba(255, 0, 255, 0.7),  
+            0 0 20px rgba(255, 0, 255, 0.5),
+            0 0 25px rgba(37, 7, 187, 0.4),
+            0 0 30px rgba(255, 0, 255, 0.3),
+            0 0 35px rgba(8, 43, 150, 0.2);
+    }
+    to {
+        text-shadow:
+            0 0 7px rgba(255, 255, 50, 1),     
+            0 0 12px rgba(255, 255, 50, 0.8),
+            0 0 17px rgba(255, 50, 255, 0.8),  
+            0 0 22px rgba(255, 50, 255, 0.6),
+            0 0 27px rgba(255, 255, 50, 0.5),
+            0 0 32px rgba(255, 50, 255, 0.4),
+            0 0 37px rgba(255, 50, 255, 0.3),
+            0 0 40px rgba(255, 50, 255, 0.2);
+    }
+}
+
+/* prefixes for  glow-mobile */
+@-webkit-keyframes glow-mobile {
+    from {
+        text-shadow:
+            0 0 5px rgba(35, 18, 222, 0.8),
+            0 0 10px rgba(30, 15, 124, 0.6),
+            0 0 15px rgba(255, 0, 255, 0.7),
+            0 0 20px rgba(255, 0, 255, 0.5),
+            0 0 25px rgba(10, 10, 183, 0.4),
+            0 0 30px rgba(255, 0, 255, 0.3),
+            0 0 35px rgba(2, 15, 100, 0.2);
+    }
+    to {
+        text-shadow:
+            0 0 7px rgb(3, 3, 156),
+    }
+}
+
+/* form style */
+.form-label {
+    color: #ecf0f1;
+}
+
+.form-control {
+    background-color: rgba(255, 255, 255, 0.1); 
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: #ecf0f1;
+}
+
+.form-control::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+/* select question  button style */
+.question-count-card {
+    cursor: pointer;
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out, background-color 0.2s ease-in-out;
+    background-color: rgba(246, 120, 202, 0.8); 
+    border: none;
+    color: #ecf0f1;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.question-count-card:hover {
+    transform: translateY(-8px); 
+     border: 3px solid #e1901f !important;
+    box-shadow: 0 12px 25px  rgba(224, 133, 198, 0.9); 
+    background-color: rgba(243, 20, 187, 0.6); 
+}
+
+
+
+/* Rules page style */
+.list-group-item {
+    background-color: transparent; 
+    border-color: rgba(16, 16, 16, 0.2);
+    color: #ecf0f1;
+    padding: 10px 15px;
+}
+
+.btn {
+    border-radius: 8px; 
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out, background-color 0.3s ease-in-out; 
+}
+
+.btn-primary {
+    background-color: #f685df; 
+    border-color: #0d6efd;
+    box-shadow: 0 4px 10px rgba(13, 110, 253, 0.4);
+    color: white;
+}
+/*login/signup style*/
+.btn-primary:hover {
+    transform: translateY(-5px); 
+    background-color: #e607ff;
+    box-shadow: 0 0 20px rgba(13, 110, 253, 0.8),
+	0 0 30px rgba(13, 110, 253, 0.6);
+}
+
+.btn-success {
+    background-color: #ecbe27;
+    border-color: #85d01c;
+    box-shadow: 0 4px 10px rgba(25, 135, 84, 0.4); 
+    color: white; 
+}
+
+.btn-success:hover {
+    transform: translateY(-5px);
+	background-color: #97eb20;
+    box-shadow: 0 0 20px rgba(76, 140, 110, 0.8),
+                0 0 30px rgba(25, 135, 84, 0.6);
+}
+
+.btn-secondary {
+    background-color: #479de9;
+    border-color: #f54cc2;
+    box-shadow: 0 4px 10px rgba(108, 117, 125, 0.4);
+    color: white;
+}
+
+.btn-secondary:hover {
+    transform: translateY(-5px);
+    background-color: #1469be;
+    box-shadow: 0 0 20px rgba(235, 115, 195, 0.8),
+                0 0 30px rgba(231, 36, 176, 0.6);
+}
+
+/* adjust for screen size */
+@media (max-width: 768px) {
+    .glow-text {
+        font-size: 2.5em; 
+        max-width: fit-content; 
+        animation:
+            typing 8.2s steps(13) infinite forwards,
+            blink-caret 0.65s step-end infinite,
+             glow-mobile 1s ease-in-out infinite alternate;
+        -webkit-animation:
+            typing 8.2s steps(13) infinite forwards,
+            blink-caret 0.65s step-end infinite,
+            glow-mobile 1s ease-in-out infinite alternate; 
+    }
+    .col-md-6, .col-md-8 {
+        width: 100% !important;
+    }
+}
+

@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz App</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <!--stylesheet-->
+	<link rel="stylesheet" href="style.css">
+	<!-- Favicon -->
+	<link rel="icon" type="image/png" href="favicon.png">
+</head>
+<body>
+
+    <div class="container d-flex flex-column justify-content-center align-items-center vh-100 text-center">
+		<!--Homepage-->
+        <div id="homePage" class="page">
+            <h1 class="glow-text mb-4">ARE YOU READY</h1>
+            <div class="d-flex justify-content-center gap-4 mt-4"> <button class="btn btn-lg btn-primary" id="loginBtnHome">Log In</button>
+                <button class="btn btn-lg btn-success" id="signupBtnHome">Sign Up</button>
+            </div>
+        </div>
+		<!-- signup page-->
+        <div id="signupPage" class="page d-none">
+            <h2 class="mb-4">Sign Up</h2>
+            <form class="col-md-6 mx-auto">
+                <div class="mb-3">
+                    <label for="signupUsername" class="form-label">Username</label>
+                    <input type="text" class="form-control" id="signupUsername" required>
+                </div>
+                <div class="mb-3">
+                    <label for="signupEmail" class="form-label">Email address</label>
+                    <input type="email" class="form-control" id="signupEmail" required>
+                </div>
+                <div class="mb-3">
+                    <label for="signupPassword" class="form-label">Password</label>
+                    <input type="password" class="form-control" id="signupPassword" required>
+                </div>
+				<div class="d-flex justify-content-between mt-3 gap-3">
+                <button type="button" class="btn btn-primary" id="submitSignupBtn">Sign Up</button>
+                <button type="button" class="btn btn-secondary" id="backToLoginFromSignup">Already have an account? Log In</button>
+				</div>
+            </form>
+        </div>
+		<!--login page-->
+        <div id="loginPage" class="page d-none">
+            <h2 class="mb-4">Log In</h2>
+            <form class="col-md-6 mx-auto">
+                <div class="mb-3">
+                    <label for="loginUsername" class="form-label">Username</label>
+                    <input type="text" class="form-control" id="loginUsername" required>
+                </div>
+                <div class="mb-3">
+                    <label for="loginPassword" class="form-label">Password</label>
+                    <input type="password" class="form-control" id="loginPassword" required>
+                </div>
+				<div class="d-flex justify-content-between mt-3 gap-3">
+                <button type="button" class="btn btn-primary" id="submitLoginBtn">Log In</button>
+                <button type="button" class="btn btn-secondary " id="backToSignupFromLogin">Don't have an account? Sign Up</button>
+				</div>
+            </form>
+        </div>
+		<!--question amount selection page-->
+        <div id="questionCountPage" class="page d-none">
+            <h2 class="mb-4">Select Number of Questions</h2>
+            <div class="row row-cols-1 row-cols-md-3 g-4 justify-content-center">
+                <div class="col">
+                    <div class="card h-100 question-count-card" data-count="10">
+                        <div class="card-body">
+                            <h5 class="card-title">10 Questions</h5>
+                            <p class="card-text">Quick & Fun</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card h-100 question-count-card" data-count="30">
+                        <div class="card-body">
+                            <h5 class="card-title">30 Questions</h5>
+                            <p class="card-text">Good Warm-up</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card h-100 question-count-card" data-count="50">
+                        <div class="card-body">
+                            <h5 class="card-title">50 Questions</h5>
+                            <p class="card-text">Challenging</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card h-100 question-count-card" data-count="85">
+                        <div class="card-body">
+                            <h5 class="card-title">85 Questions</h5>
+                            <p class="card-text">Serious Test</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card h-100 question-count-card" data-count="100">
+                        <div class="card-body">
+                            <h5 class="card-title">100 Questions</h5>
+                            <p class="card-  text">Marathon Mode</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card h-100 question-count-card" data-count="all">
+                        <div class="card-body">
+                            <h5 class="card-title">All Questions</h5>
+                            <p class="card-text">Ultimate Challenge!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+		<!--rules page-->
+        <div id="rulesPage" class="page d-none">
+            <h2 class="mb-4">Quiz Rules</h2>
+            <ul class="list-group col-md-8 mx-auto text-start">
+                <li class="list-group-item">1. Read each question carefully.</li>
+                <li class="list-group-item">2. Select the best answer from the given options.</li>
+                <li class="list-group-item">3. You will have a limited time for each question (e.g., 20 seconds).</li>
+                <li class="list-group-item">4. Your score will be tracked throughout the quiz.</li>
+                <li class="list-group-item">5. Good luck and have fun!</li>
+            </ul>
+            <button class="btn btn-lg btn-success mt-4" id="startQuizBtn">Start Quiz!</button>
+        </div>
+		<!--quiz page-->
+		<div id="quizPage" class = "page d-none text-center">
+			<h2 class="mb-4">Quiz</h2>
+			<h2 id="timer" class="timer">Time left: 20s</h2>
+			<div id="quiz"></div> 
+			<button class="btn btn-primary mt-2" id="logoutFromQuiz">Log Out</button>
+		</div>
+		<!--reults page-->	
+		<div id="resultPage" class="page d-none">
+			 <h2>Quiz Complete!</h2>
+			 <h3>Your Score: <span id="finalScore"></span> / <span id="totalQuestions"></span></h3>
+			 <h4>Leaderboard</h4>
+			 <ol id="leaderboardList"></ol>
+			 <div class="d-flex justify-content-between mt-3 gap-3">
+			 <button class="btn btn-primary" onclick="restartQuiz()">Restart Quiz</button>
+			 <button class="btn btn-primary mt-2" id="logoutFromResult">Log Out</button>
+			 </div>
+		</div>
+
+    </div>
+	<!--scripts and other files-->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+	<script src="/quiz.js"></script>
+	<script src="/login.js"></script>
+	<script src="/signup.js"></script>
+	<script src="/logout.js"></script>
+	<script src="/webpage.js"></script>
+
+	<audio id="correctSound" src="correct.mp3" preload="auto"></audio>
+	<audio id="incorrectSound" src="incorrect.mp3" preload="auto"></audio>
+	<audio id="cheerSound" src="cheering.mp3" preload="auto"></audio>
+	<audio id="booSound" src="boo.mp3" preload="auto"></audio>
+</body>
+</html>
