@@ -8,11 +8,34 @@
   const timeLimit = 20;
   const answers = [];
 
+  // Helper to decode HTML entities from OpenTDB
+  function decode(str) {
+    const txt = document.createElement("textarea");
+    txt.innerHTML = str;
+    return txt.value;
+  }
+
+  // Questions fetch here
   function fetchQuestions() {
-    return fetch("/questions.json")
+    const API_KEY = `https://opentdb.com/api.php?amount=10&category=15&difficulty=medium&type=multiple`;
+
+    return fetch(API_KEY)
       .then(res => res.json())
       .then(data => {
-        allQuestions = data;
+        allQuestions = data.results.map((q) => {
+          const answers = [q.correct_answer, ...q.incorrect_answers].sort(() => Math.random() - 0.5);
+          const answerLabels = ["A", "B", "C", "D"];
+          const answerObj = {};
+          answers.forEach((answer, i) => answerObj[answerLabels[i]] = decode(answer));
+
+          const correctLabel = answerLabels[answers.indexOf(q.correct_answer)];
+
+          return {
+            question: decode(q.question),
+            ...answerObj,
+            answer: correctLabel
+          };
+        });
       })
       .catch(err => {
         console.error("Error fetching quiz questions:", err);
@@ -21,11 +44,21 @@
   }
 
   function startQuiz() {
-    questions = allQuestions.sort(() => 0.5 - Math.random()).slice(0, selectedQuestionCount);
-    currentIndex = 0;
-    answers.length = 0;
-    renderQuestion();
-  }
+  // Hide all pages except quizPage
+  document.querySelectorAll(".page").forEach(p => p.classList.add("d-none"));
+  document.getElementById("quizPage")?.classList.remove("d-none");
+
+  // Reset quiz state
+  questions = allQuestions.sort(() => 0.5 - Math.random()).slice(0, selectedQuestionCount);
+  currentIndex = 0;
+  answers.length = 0;
+
+  // Clear any previous timer
+  clearInterval(questionTimer);
+  quizActive = false;
+
+  renderQuestion();
+}
 
   function renderQuestion() {
     const container = document.getElementById("quiz");
@@ -69,22 +102,23 @@
   }
 
   function startTimer() {
-    if (quizActive) return;
-    quizActive = true;
-    let timeRemaining = timeLimit;
-    const timerDisplay = document.getElementById("timer");
-    timerDisplay.textContent = `Time left: ${timeRemaining}s`;
+  // Always clear any previous timer before starting a new one
+  clearInterval(questionTimer);
+  quizActive = true;
+  let timeRemaining = timeLimit;
+  const timerDisplay = document.getElementById("timer");
+  timerDisplay.textContent = `Time left: ${timeRemaining}s`;
 
-    questionTimer = setInterval(() => {
-      timeRemaining--;
-      timerDisplay.textContent = `Time left: ${timeRemaining}s`;
-      if (timeRemaining <= 0) {
-        clearInterval(questionTimer);
-        quizActive = false;
-        handleTimeout();
-      }
-    }, 1000);
-  }
+  questionTimer = setInterval(() => {
+    timeRemaining--;
+    timerDisplay.textContent = `Time left: ${timeRemaining}s`;
+    if (timeRemaining <= 0) {
+      clearInterval(questionTimer);
+      quizActive = false;
+      handleTimeout();
+    }
+  }, 1000);
+}
 
   function handleAnswerSelection(selectedInput, question) {
     clearInterval(questionTimer);
@@ -109,31 +143,37 @@
   }
 
   function handleTimeout() {
-    clearInterval(questionTimer);
-    quizActive = false;
+  clearInterval(questionTimer);
+  quizActive = false;
 
-    const q = questions[currentIndex];
-    const options = document.querySelectorAll(`input[name="answer-${currentIndex}"]`);
+  const q = questions[currentIndex];
+  const options = document.querySelectorAll(`input[name="answer-${currentIndex}"]`);
 
-    document.getElementById("incorrectSound")?.play();
+  document.getElementById("incorrectSound")?.play();
 
-    options.forEach((input) => {
-      const label = input.parentElement;
-      if (input.value === q.answer) {
-        label.style.backgroundColor = "rgba(0, 255, 0, 0.3)";
-        label.style.border = "2px solid green";
-      }
-    });
+  // Reveal the correct answer
+  options.forEach((input) => {
+    const label = input.parentElement;
+    if (input.value === q.answer) {
+      label.style.backgroundColor = "#39ff14";
+      label.style.border = "2px solid green";
+      label.style.color = "#000";
+    }
+  });
 
-    setTimeout(() => {
-      currentIndex++;
-      if (currentIndex < questions.length) {
-        renderQuestion();
-      } else {
-        submitQuiz();
-      }
-    }, 1000);
-  }
+  // Mark this question as unanswered (no point)
+  answers[currentIndex] = null;
+
+  // Move to the next question after a short delay
+  setTimeout(() => {
+    currentIndex++;
+    if (currentIndex < questions.length) {
+      renderQuestion();
+    } else {
+      submitQuiz();
+    }
+  }, 1000); // 1 second delay to show the correct answer
+}
 
   function highlightAnswers(selectedInput, correctAnswer) {
     const options = document.querySelectorAll(`input[name="answer-${currentIndex}"]`);
@@ -144,11 +184,13 @@
       label.style.borderRadius = "5px";
 
       if (input.value === correctAnswer) {
-        label.style.backgroundColor = "rgba(0, 255, 0, 0.3)";
+        label.style.backgroundColor = "#39ff14";
         label.style.border = "2px solid green";
+        label.style.color = "#000";
       } else if (input === selectedInput) {
-        label.style.backgroundColor = "rgba(255, 0, 0, 0.3)";
-        label.style.border = "2px solid red";
+        label.style.backgroundColor = "#ff1744";
+        label.style.border = "2px solid #ff1744";
+        label.style.color = "#fff";
       }
     });
   }
@@ -175,27 +217,33 @@
       }
     }
 
+    const userObj = JSON.parse(currentUser);
+
     fetch("/submit-quiz", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username: currentUser, answers, score })
+      body: JSON.stringify({ username: userObj.username, answers, score })
     })
       .then((res) => res.json())
       .then(() => {
         document.getElementById("finalScore").textContent = score;
         document.getElementById("totalQuestions").textContent = questions.length;
 
-        fetch("/leaderboard")
+        fetch(`/leaderboard/${userObj.username}`)
           .then((res) => res.json())
-          .then((leaderboard) => {
+          .then(({ top10, rank }) => {
             const list = document.getElementById("leaderboardList");
             list.innerHTML = "";
 
-            leaderboard.forEach((entry) => {
+            top10.forEach((entry) => {
               const li = document.createElement("li");
               li.textContent = `${entry.username}: ${entry.score}`;
               list.appendChild(li);
             });
+
+            const rankInfo = document.createElement("p");
+            rankInfo.textContent = `Your Global Rank: #${rank}`;
+            list.appendChild(rankInfo);
           })
           .catch((err) => console.error("Leaderboard fetch error:", err));
 
@@ -210,6 +258,11 @@
 
         document.getElementById("quizPage").classList.add("d-none");
         document.getElementById("resultPage").classList.remove("d-none");
+
+        // ✅ Update user score history on account page
+        if (window.loadAccountInfo) {
+          window.loadAccountInfo();
+        }
       })
       .catch((err) => console.error("Quiz submit error:", err));
   }
@@ -218,11 +271,20 @@
     selectedQuestionCount = count ?? allQuestions.length;
   }
 
-  window.quizModule = {
-    fetchQuestions,
-    startQuiz,
-    setQuestionCount
-  };
+window.quizModule = {
+  fetchQuestions,
+  startQuiz,
+  setQuestionCount,
+  get questionTimer() {
+    return questionTimer;
+  },
+  clearTimer() {
+    clearInterval(questionTimer);
+    questionTimer = null;
+    quizActive = false;
+  }
+};
+
 })();
 
 // Global restart function for leaderboard button
@@ -231,15 +293,10 @@ window.restartQuiz = () => {
   document.getElementById("resultPage")?.classList.add("d-none");
   document.getElementById("quizPage")?.classList.add("d-none");
 
-  // Show question selection
-  document.getElementById("questionCountPage")?.classList.remove("d-none");
+  // Show rules page only (not quiz page)
+  document.getElementById("rulesPage")?.classList.remove("d-none");
 
   // Clear quiz display content
   const quizContainer = document.getElementById("quiz");
   if (quizContainer) quizContainer.innerHTML = "";
-
-  // Re-fetch questions to reinitialize state
-  if (window.quizModule?.fetchQuestions) {
-    window.quizModule.fetchQuestions();
-  }
 };

@@ -1,109 +1,101 @@
-    const express = require('express');
-const fs = require('fs');
+const express = require('express');
 const path = require('path');
+const { MongoClient } = require('mongodb');
 
 const app = express();
 const port = 3000;
 
-let users = [];
-
 app.use(express.json());
-
 app.use(express.static(__dirname));
 
-// Load users from users.json
-function loadUsers() {
-  if (fs.existsSync('users.json')) {
-    const content = fs.readFileSync('users.json', 'utf-8').trim();
-    if (content) {
-      users = JSON.parse(content);
-    }
+// MongoDB connection
+const uri = 'mongodb+srv://dan_th3_man:masterchief11@cluster0.xewil2z.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
+const client = new MongoClient(uri);
+let db;
+
+async function connectToDB() {
+  if (!db) {
+    await client.connect();
+    db = client.db('quizApp');
   }
+  return db;
 }
 
-loadUsers();
+// Signup
+app.post('/signup', async (req, res) => {
+  const { username, password, email } = req.body;
+  const db = await connectToDB();
+  const users = db.collection('users');
 
-//signup 
-app.post('/signup', (req, res) => {
-  const { username, password } = req.body;
-  loadUsers();
-
-  if (users.some(u => u.username === username)) {
+  const existing = await users.findOne({ username });
+  if (existing) {
     return res.status(409).json({ success: false, message: 'User already exists' });
   }
 
-  users.push({ username, password });
-  fs.writeFileSync('users.json', JSON.stringify(users, null, 2));
-  loadUsers();
-
+  await users.insertOne({ username: username.trim(), password: password.trim(), email: email.trim() });
   res.json({ success: true, username });
 });
 
-// log in 
-app.post('/login', (req, res) => {
+// Login
+app.post('/login', async (req, res) => {
   const { username, password } = req.body;
-  loadUsers();
+  const db = await connectToDB();
+  const user = await db.collection('users').findOne({ username, password });
 
-  const user = users.find(u => u.username === username && u.password === password);
   if (user) {
-    res.json({ success: true, username });
+    res.json({ success: true, username: user.username, email: user.email || `${user.username}@example.com` });
   } else {
     res.status(401).json({ success: false });
   }
 });
 
-// read in questions
-app.get('/questions.json', (req, res) => {
-  fs.readFile(path.join(__dirname, 'questions.json'), (err, data) => {
-    if (err) {
-      res.status(500).send('Error loading questions');
-    } else {
-      res.type('application/json').send(data);
-    }
-  });
-});
 
-// submit quiz
-app.post('/submit-quiz', (req, res) => {
+// Submit quiz
+app.post('/submit-quiz', async (req, res) => {
   const quizData = req.body;
-  console.log('Quiz submission:', quizData);
-
-  let results = [];
-  const filePath = 'quiz-results.json';
-
-  if (fs.existsSync(filePath)) {
-    const lines = fs.readFileSync(filePath, 'utf-8').trim().split('\n');
-    results = lines.map(line => JSON.parse(line));
-  }
-
-  results.push(quizData);
-  fs.writeFileSync(filePath, results.map(r => JSON.stringify(r)).join('\n'));
-
+  const db = await connectToDB();
+  await db.collection('results').insertOne(quizData);
   res.json({ message: 'Quiz submitted successfully!' });
 });
 
-// leaderbpard
-app.get('/leaderboard', (req, res) => {
-  let results = [];
-  const filePath = 'quiz-results.json';
+// Leaderboard with global user rank
+app.get('/leaderboard/:username', async (req, res) => {
+  const db = await connectToDB();
+  const allScores = await db.collection('results')
+    .find({})
+    .sort({ score: -1 })
+    .toArray();
 
-  if (fs.existsSync(filePath)) {
-    const lines = fs.readFileSync(filePath, 'utf-8').trim().split('\n');
-    results = lines.map(line => JSON.parse(line));
-  }
+  const top10 = allScores.slice(0, 10);
+  const { username } = req.params;
 
-  results.sort((a, b) => b.score - a.score);
-  const top = results.slice(0, 10);
+  // Get user's highest score
+  const userEntries = allScores.filter(entry => entry.username === username);
+  const highestScore = Math.max(...userEntries.map(e => e.score), 0);
 
-  res.json(top);
+  // Get user's rank
+  const rank = allScores.findIndex(entry =>
+    entry.username === username && entry.score === highestScore
+  ) + 1;
+
+  res.json({ top10, rank });
 });
 
-//error 404
+// Get all scores for a specific user
+app.get('/user-scores/:username', async (req, res) => {
+  const db = await connectToDB();
+  const userScores = await db.collection('results')
+    .find({ username: req.params.username })
+    .toArray();
+  res.json(userScores);
+});
+
+// 404 handler
 app.use((req, res) => {
   res.status(404).send('<h1>404 Not Found</h1>');
 });
 
-// start the server
+// Start server
 app.listen(port, () => {
   console.log(`Express server running at http://localhost:${port}`);
 });

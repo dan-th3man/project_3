@@ -9,6 +9,7 @@
 	<link rel="stylesheet" href="style.css">
 	<!-- Favicon -->
 	<link rel="icon" type="image/png" href="favicon.png">
+
 </head>
 <body>
 
@@ -20,6 +21,31 @@
                 <button class="btn btn-lg btn-success" id="signupBtnHome">Sign Up</button>
             </div>
         </div>
+		
+		<!-- Account page -->
+	<div id="accountPage" class="page d-none">
+  		<h2 class="mb-4">Account</h2>
+  	<div class="account-box p-4 position-relative" style="background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); box-shadow: 0 8px 30px rgba(0,0,0,0.2); border-	radius: 20px; max-width: 400px; margin: 0 auto;">
+   	 <div class="text-center mb-3">
+     	 <img src="https://api.dicebear.com/7.x/identicon/svg?seed=avatar" alt="Avatar" class="rounded-circle shadow" style="width: 90px; height: 90px; border: 4px solid #fff; 	background: #fff; margin-bottom: 10px;">
+    	</div>
+    	<h3 id="accountUsername" class="fw-bold mb-1"></h3>
+    	<p id="accountEmail" class="text-muted mb-3"></p>
+
+    	<h4 class="mt-4">Your Quiz History</h4>
+    	<div class="score-history-container mt-2">
+     	 <ul id="userScoreList" class="list-group mb-0"></ul>
+   	 </div>
+
+    	<button class="btn btn-primary mt-3 w-100" id="startQuizBtnFromAccount">
+      	<i class="bi bi-play-circle"></i> Start Quiz
+    	</button>
+    	<button class="btn btn-danger mt-2 w-100" id="logoutFromAccount">
+      	<i class="bi bi-box-arrow-right"></i> Log Out
+    	</button>
+  	</div>
+	</div>
+		
 		<!-- signup page-->
         <div id="signupPage" class="page d-none">
             <h2 class="mb-4">Sign Up</h2>
@@ -63,6 +89,7 @@
 		<!--question amount selection page-->
         <div id="questionCountPage" class="page d-none">
             <h2 class="mb-4">Select Number of Questions</h2>
+			<button class="btn btn-lg btn-primary" id="goToAccountPage">Go to Account</button>
             <div class="row row-cols-1 row-cols-md-3 g-4 justify-content-center">
                 <div class="col">
                     <div class="card h-100 question-count-card" data-count="10">
@@ -127,12 +154,15 @@
             <button class="btn btn-lg btn-success mt-4" id="startQuizBtn">Start Quiz!</button>
         </div>
 		<!--quiz page-->
-		<div id="quizPage" class = "page d-none text-center">
-			<h2 class="mb-4">Quiz</h2>
-			<h2 id="timer" class="timer">Time left: 20s</h2>
-			<div id="quiz"></div> 
-			<button class="btn btn-primary mt-2" id="logoutFromQuiz">Log Out</button>
-		</div>
+		<div id="quizPage" class="page d-none text-center">
+  <div class="quiz-box">
+    <h2 class="mb-4">Gaming Quiz</h2>
+    <h2 id="timer" class="timer">Time left: 20s</h2>
+    <div id="quiz"></div> 
+    <button class="btn btn-primary mt-2 w-100" id="logoutFromQuiz">Log Out</button>
+  </div>
+</div>
+
 		<!--reults page-->	
 		<div id="resultPage" class="page d-none">
 			 <h2>Quiz Complete!</h2>
@@ -142,6 +172,11 @@
 			 <div class="d-flex justify-content-between mt-3 gap-3">
 			 <button class="btn btn-primary" onclick="restartQuiz()">Restart Quiz</button>
 			 <button class="btn btn-primary mt-2" id="logoutFromResult">Log Out</button>
+			 <button class="btn btn-lg btn-primary" id="goToAccountPage">Go to Account</button>
+			 <button class="btn btn-info mt-3" id="shareResultBtn">
+ 		         	<i class="bi bi-share-fill"></i> Share My Score
+			 </button>
+
 			 </div>
 		</div>
 
@@ -153,6 +188,7 @@
 	<script src="/signup.js"></script>
 	<script src="/logout.js"></script>
 	<script src="/webpage.js"></script>
+	<script src="/account.js"></script>
 
 	<audio id="correctSound" src="correct.mp3" preload="auto"></audio>
 	<audio id="incorrectSound" src="incorrect.mp3" preload="auto"></audio>
