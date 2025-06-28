@@ -462,4 +462,19 @@ button {
   padding-left: 0;
 }
 
+@media (max-width: 600px) {
+  #resultPage .btn {
+    display: block;
+    width: 100%;
+    margin: 0.5rem 0;
+    font-size: 1rem;
+    padding: 12px;
+  }
+
+  #resultPage .d-flex {
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+}
+
 
